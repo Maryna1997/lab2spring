@@ -13,8 +13,4 @@ public class CurrencyGovUa {
     float rate;
     String cc;
     String exchangedate;
-
-    public float getRate() {
-        return rate;
-    }
 }

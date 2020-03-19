@@ -12,8 +12,4 @@ public class CurrencyPrivatbank {
     String date;
     float saleRate;
     float purchaseRate;
-
-    public String getTitle() {
-        return title;
-    }
 }
