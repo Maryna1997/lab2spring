@@ -1,4 +1,4 @@
-package ua.edu.sumdu.сhornobai.lab2spring.model;
+package ua.edu.sumdu.chornobai.lab2spring.model;
 
 import lombok.*;
 

@@ -1,9 +1,9 @@
-package ua.edu.sumdu.сhornobai.lab2spring.services;
+package ua.edu.sumdu.chornobai.lab2spring.services;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ua.edu.sumdu.сhornobai.lab2spring.model.CurrencyMonobank;
+import ua.edu.sumdu.chornobai.lab2spring.model.CurrencyMonobank;
 
 import java.util.Objects;
 

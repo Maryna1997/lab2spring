@@ -1,4 +1,4 @@
-package ua.edu.sumdu.сhornobai.lab2spring.services;
+package ua.edu.sumdu.chornobai.lab2spring.services;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

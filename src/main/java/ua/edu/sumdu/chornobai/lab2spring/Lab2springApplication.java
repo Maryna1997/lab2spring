@@ -1,4 +1,4 @@
-package ua.edu.sumdu.сhornobai.lab2spring;
+package ua.edu.sumdu.chornobai.lab2spring;
 
 
 import org.springframework.boot.SpringApplication;
@@ -25,8 +25,8 @@ public class Lab2springApplication implements WebMvcConfigurer {
         SpringApplication.run(Lab2springApplication.class, args);
     }
 
-    @Bean(name = "threadPoolTaskExecutor")
-    public Executor threadPoolTaskExecutor() {
-        return new ThreadPoolTaskExecutor();
-    }
+//    @Bean(name = "threadPoolTaskExecutor")
+//    public Executor threadPoolTaskExecutor() {
+//        return new ThreadPoolTaskExecutor();
+//    }
 }
