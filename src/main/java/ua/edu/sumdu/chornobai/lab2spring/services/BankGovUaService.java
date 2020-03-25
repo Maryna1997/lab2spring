@@ -46,7 +46,6 @@ public class BankGovUaService {
                     newCurrencyValue.setSaleRate(cur.getRate());
                     newCurrencyValue.setPurchaseRate(cur.getRate());
                     currencyValueList.add(newCurrencyValue);
-                    //currencyCode =  Integer.parseInt(cur.getR030());
                 }
             }
         }
