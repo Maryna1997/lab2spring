@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,7 @@ import ua.edu.sumdu.chornobai.lab2spring.model.CurrencyValue;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MonobankService {
@@ -26,20 +25,21 @@ public class MonobankService {
     }
     final static Logger logger = Logger.getLogger(MonobankService.class);
 
-    //@Async
-    public void getResult(String currency, String date,  ArrayList<CurrencyValue> currencyValueList){
+    @Async
+    public CompletableFuture<CurrencyValue> getResult(String currency, String date){
         CurrencyMonobank[] currencyMonobank = restTemplatesParsingService.parseJSON();
+        CurrencyValue newCurrencyValue = new CurrencyValue();
         for (CurrencyMonobank cur : currencyMonobank
         ) {
             if (getCurrencyDigitalCode(currency) == cur.getCurrencyCodeA() && cur.getCurrencyCodeB() == 980) {
-                CurrencyValue newCurrencyValue = new CurrencyValue();
                 newCurrencyValue.setBank("Monobank");
                 newCurrencyValue.setDate(date);
                 newCurrencyValue.setSaleRate(cur.getRateSell());
                 newCurrencyValue.setPurchaseRate(cur.getRateBuy());
-                currencyValueList.add(newCurrencyValue);
+                logger.info("Response from Monobank: " + newCurrencyValue);
             }
         }
+        return CompletableFuture.completedFuture(newCurrencyValue);
     }
 
     public long getCurrencyDigitalCode(String currency) {

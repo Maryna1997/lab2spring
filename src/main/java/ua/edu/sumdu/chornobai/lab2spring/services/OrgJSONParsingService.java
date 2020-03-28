@@ -23,13 +23,13 @@ public class OrgJSONParsingService {
         ) {
             JSONObject jsonCurrency = (JSONObject) currency;
             try {
+                logger.info("Parsing by OrgJSONService");
                 CurrencyPrivatbank newCurrencyPrivatbank = new CurrencyPrivatbank();
                 newCurrencyPrivatbank.setTitle(jsonCurrency.getString("currency"));
                 newCurrencyPrivatbank.setDate(date);
                 newCurrencyPrivatbank.setSaleRate(jsonCurrency.getFloat("saleRate"));
                 newCurrencyPrivatbank.setPurchaseRate(jsonCurrency.getFloat("purchaseRate"));
                 listCurrencyPrivatbank.add(newCurrencyPrivatbank);
-
             } catch (JSONException e) {
                 logger.log(Level.FATAL, "Exception: ", e);
             }

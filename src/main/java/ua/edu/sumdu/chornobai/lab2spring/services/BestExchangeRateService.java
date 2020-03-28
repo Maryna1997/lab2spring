@@ -10,6 +10,7 @@ import ua.edu.sumdu.chornobai.lab2spring.model.CurrencyValue;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
@@ -25,8 +26,8 @@ public class BestExchangeRateService {
 
     final static Logger logger = Logger.getLogger(BestExchangeRateService.class);
 
-    //@Async
-    public ArrayList<CurrencyValue> getBestExchangeRateForPeriod(LocalDate startDay, String currency) {
+    @Async
+    public CompletableFuture<ArrayList<CurrencyValue>> getBestExchangeRateForPeriod(LocalDate startDay, String currency) {
 
         ArrayList<CurrencyValue> currencyValueList = new ArrayList<>();
 
@@ -69,7 +70,7 @@ public class BestExchangeRateService {
 
         Stream<CurrencyValue> stream = new ArrayList<>(currencyValueList.subList(0, currencyValueList.size())).stream();
         stream.filter(cur -> cur.getSaleRate() != maxCurrencyValue).forEach(currencyValueList:: remove);
-        return currencyValueList;
+        return CompletableFuture.completedFuture(currencyValueList);
     }
 
     public float getmaxCurrencyValue(ArrayList<CurrencyValue> currencyValueList) {

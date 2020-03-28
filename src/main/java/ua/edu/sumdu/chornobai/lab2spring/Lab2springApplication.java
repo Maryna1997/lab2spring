@@ -25,8 +25,4 @@ public class Lab2springApplication implements WebMvcConfigurer {
         SpringApplication.run(Lab2springApplication.class, args);
     }
 
-//    @Bean(name = "threadPoolTaskExecutor")
-//    public Executor threadPoolTaskExecutor() {
-//        return new ThreadPoolTaskExecutor();
-//    }
 }
