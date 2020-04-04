@@ -9,7 +9,11 @@ import org.apache.log4j.Logger;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(path = "/apicurrency")
@@ -18,16 +22,16 @@ public class AppController {
     private PrivatbankService privatbankService;
     private BankGovUaService bankGovUaService;
     private MonobankService monobankService;
-    private BestExchangeRateService bestExchangeRateService;
+    private MinMaxExchangeRateService minMaxExchangeRateService;
 
     final static Logger logger = Logger.getLogger(AppController.class);
 
     public AppController(PrivatbankService privatbankService, BankGovUaService bankGovUaService,
-                         MonobankService monobankService, BestExchangeRateService bestExchangeRateService) {
+                         MonobankService monobankService, MinMaxExchangeRateService minMaxExchangeRateService) {
         this.privatbankService = privatbankService;
         this.bankGovUaService = bankGovUaService;
         this.monobankService = monobankService;
-        this.bestExchangeRateService = bestExchangeRateService;
+        this.minMaxExchangeRateService = minMaxExchangeRateService;
     }
 
     @RequestMapping(path = "/exchangeRate/{currency}/{date}", method = RequestMethod.GET)
@@ -36,6 +40,7 @@ public class AppController {
         logger.info("New request for get exchange rate (currency = " + currency + ", date = " + date + ")");
         ExchangeRate result = new ExchangeRate();
         ArrayList<CurrencyValue> currencyValueList = new ArrayList<>();
+        List<CurrencyValue> combinedResult;
         result.setCurrency(currency);
         result.setPeriod(date);
         try {
@@ -45,20 +50,26 @@ public class AppController {
             LocalDate localDate = LocalDate.of(yyyy, mm, dd);
 
             if (localDate.isBefore(LocalDate.now()) || localDate.equals(LocalDate.now())) {
-                CurrencyValue privatbankResult = privatbankService.getResult(date, currency).get();
-                 if (privatbankResult.getBank() != null) {
-                     currencyValueList.add(privatbankResult);
-                 }
-                CurrencyValue bankGovUaResult = bankGovUaService.getResult(date, currency).get();
-                if (bankGovUaResult.getBank() != null) {
-                    currencyValueList.add(bankGovUaResult);
-                }
+                CompletableFuture<CurrencyValue> privatbankResult = privatbankService.getResult(date, currency);
+                CompletableFuture<CurrencyValue> bankGovUaResult = bankGovUaService.getResult(date, currency);
+
                 if (localDate.equals(LocalDate.now())) {
-                    CurrencyValue monobankResult = monobankService.getResult(currency, date).get();
-                    if (monobankResult.getBank() != null) {
-                        currencyValueList.add(monobankResult);
+                    CompletableFuture<CurrencyValue> monobankResult = monobankService.getResult(currency, date);
+                    combinedResult = Stream.of(privatbankResult, bankGovUaResult, monobankResult)
+                            .map(CompletableFuture::join).collect(Collectors.toList());
+                }
+                else {
+                    combinedResult = Stream.of(privatbankResult, bankGovUaResult).map(CompletableFuture::join)
+                            .collect(Collectors.toList());
+                }
+
+                for (CurrencyValue cur: combinedResult
+                     ) {
+                    if (cur.getBank() != null) {
+                       currencyValueList.add(cur);
                     }
                 }
+
                 if (currencyValueList.size() > 0)  result.setListOfValue(currencyValueList);
                 else result.setMessage("Currency info not found!");
                 logger.info("Response result:" + result);
@@ -73,58 +84,82 @@ public class AppController {
             logger.log(Level.FATAL, "Exception: ", e);
             return result;
         }
-        catch (InterruptedException | ExecutionException  e){
-            result.setMessage("Error: try again!");
-            logger.log(Level.FATAL, "Exception: ", e);
-            return result;
-        }
     }
 
-    @RequestMapping(path = "/bestExchangeRate/{currency}/{period}", method = RequestMethod.GET)
-    public ExchangeRate getBestExchangeRate(@PathVariable(name = "currency") String currency,
-                                      @PathVariable(name = "period") String period) {
-        logger.info("New request for get the best exchange rate (currency = " + currency + ", period = " + period + ")");
+
+    @RequestMapping(path = "/exchangeRate/{value}/{currency}/{period}", method = RequestMethod.GET)
+    public ExchangeRate getMinMaxExchangeRate(@PathVariable(name = "value") String value,
+                                            @PathVariable(name = "currency") String currency,
+                                            @PathVariable(name = "period") String period) {
+        logger.info("New request for get the " + value + " exchange rate (currency = " + currency + ", " +
+                "period = " + period + ")");
         ExchangeRate result = new ExchangeRate();
         ArrayList<CurrencyValue> currencyValueList;
         result.setCurrency(currency);
         result.setPeriod(period);
-        switch (period){
-            case "year":
-                try {
-                    currencyValueList = bestExchangeRateService.getBestExchangeRateForPeriod(LocalDate.now().plusYears(-1),
-                            currency).get();
-                    if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
-                    else result.setMessage("Currency info not found!");
-                } catch (InterruptedException | ExecutionException e) {
-                    logger.log(Level.FATAL, "Exception: ", e);
-                }
-                break;
-            case "month":
-                try {
-                    currencyValueList = bestExchangeRateService.getBestExchangeRateForPeriod(LocalDate.now().plusMonths(-1),
-                            currency).get();
-                    if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
-                    else result.setMessage("Currency info not found!");
-                } catch (InterruptedException | ExecutionException e) {
-                    logger.log(Level.FATAL, "Exception: ", e);
-                }
-                break;
-            case "week":
-                try {
-                    currencyValueList = bestExchangeRateService.getBestExchangeRateForPeriod(LocalDate.now().plusDays(-7),
-                            currency).get();
-                    if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
-                    else result.setMessage("Currency info not found!");
-                } catch (InterruptedException | ExecutionException e) {
-                    logger.log(Level.FATAL, "Exception: ", e);
-                }
-                break;
-            default:
-                logger.info("Incorrect period");
-                result.setMessage("Incorrect period. Please, enter 'week', 'month' or 'year'");
-                break;
-         }
+        if(value.equals("max") || value.equals("min")){
+            result.setMessage(value + " exchange rate");
+            switch (period){
+                case "year":
+                    try {
+                        currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,
+                                LocalDate.now().plusYears(-1), currency).get();
+                        if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
+                        else result.setMessage("Currency info not found!");
+                    } catch (InterruptedException | ExecutionException e) {
+                        logger.log(Level.FATAL, "Exception: ", e);
+                    }
+                    break;
+                case "month":
+                    try {
+                        currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,
+                                LocalDate.now().plusMonths(-1), currency).get();
+                        if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
+                        else result.setMessage("Currency info not found!");
+                    } catch (InterruptedException | ExecutionException e) {
+                        logger.log(Level.FATAL, "Exception: ", e);
+                    }
+                    break;
+                case "week":
+                    try {
+                        currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,
+                                LocalDate.now().plusDays(-7), currency).get();
+                        if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
+                        else result.setMessage("Currency info not found!");
+                    } catch (InterruptedException | ExecutionException e) {
+                        logger.log(Level.FATAL, "Exception: ", e);
+                    }
+                    break;
+                default:
+                    logger.info("Incorrect period");
+                    result.setMessage("Incorrect period. Please, enter 'week', 'month' or 'year'");
+                    break;
+            }
+        }
+        else result.setMessage("Сan't get the " + value + " value of the exchange rate. Only 'min' or 'max'");
         logger.info("Response result: " + result);
+        return result;
+    }
+
+    @RequestMapping(path = "/currentExchangeRate/{bank}/{currency}", method = RequestMethod.GET)
+    public ExchangeRate getCurrentExchangeRate(@PathVariable(name = "bank") String bank,
+                                        @PathVariable(name = "currency") String currency) {
+        LocalDate currentDate = LocalDate.now();
+        String stringDate = (currentDate.getDayOfMonth() <10? "0" + currentDate.getDayOfMonth() : currentDate.getDayOfMonth() )
+                + "." + (currentDate.getMonthValue() < 10 ? "0" + currentDate.getMonthValue(): currentDate.getMonthValue())
+                + "." + currentDate.getYear();
+        ExchangeRate result =  getExchangeRate(currency, stringDate);
+        ArrayList<CurrencyValue> resultList = result.getListOfValue();
+        ArrayList<CurrencyValue> newResultList = new ArrayList<>();
+        if (resultList != null) {
+            for (CurrencyValue curValue:  resultList
+            ) {
+                if (bank.equals(curValue.getBank())) newResultList.add(curValue);
+            }
+            if (newResultList.size() == 0) result.setMessage("Bank info not found!");
+        }
+        else result.setMessage("Currency info not found!");
+        result.setListOfValue(newResultList);
         return result;
     }
 }

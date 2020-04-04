@@ -14,22 +14,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
-public class BestExchangeRateService {
+public class MinMaxExchangeRateService {
     private HTTPRequestService httpRequestService;
     private JacksonParsingService jacksonParsingService;
 
     @Autowired
-    public BestExchangeRateService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService) {
+    public MinMaxExchangeRateService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService) {
         this.httpRequestService = httpRequestService;
         this.jacksonParsingService = jacksonParsingService;
     }
 
-    final static Logger logger = Logger.getLogger(BestExchangeRateService.class);
+    final static Logger logger = Logger.getLogger(MinMaxExchangeRateService.class);
 
     @Async
-    public CompletableFuture<ArrayList<CurrencyValue>> getBestExchangeRateForPeriod(LocalDate startDay, String currency) {
+    public CompletableFuture<ArrayList<CurrencyValue>> getMinMaxExchangeRateForPeriod(String value, LocalDate startDay, String currency) {
 
         ArrayList<CurrencyValue> currencyValueList = new ArrayList<>();
+        float minmaxCurrencyValue;
 
         for (LocalDate date = startDay; date.isBefore(LocalDate.now()); date = date.plusDays(1)) {
             String stringDate = (date.getDayOfMonth() <10? "0" + date.getDayOfMonth() : date.getDayOfMonth() ) + "."
@@ -65,21 +66,34 @@ public class BestExchangeRateService {
                 logger.info("No response from bank.gov.ua");
             }
         }
+        if (currencyValueList.size() > 0) {
+            if(value.equals("max")) minmaxCurrencyValue = getMaxCurrencyValue(currencyValueList);
+            else minmaxCurrencyValue = getMinCurrencyValue(currencyValueList);
 
-        float maxCurrencyValue = getmaxCurrencyValue(currencyValueList);
+            Stream<CurrencyValue> stream = new ArrayList<>(currencyValueList.subList(0, currencyValueList.size())).stream();
+            stream.filter(cur -> cur.getSaleRate() != minmaxCurrencyValue).forEach(currencyValueList:: remove);
+        }
 
-        Stream<CurrencyValue> stream = new ArrayList<>(currencyValueList.subList(0, currencyValueList.size())).stream();
-        stream.filter(cur -> cur.getSaleRate() != maxCurrencyValue).forEach(currencyValueList:: remove);
         return CompletableFuture.completedFuture(currencyValueList);
     }
 
-    public float getmaxCurrencyValue(ArrayList<CurrencyValue> currencyValueList) {
-        float maxCurrencyValue = 0;
+    public float getMaxCurrencyValue(ArrayList<CurrencyValue> currencyValueList) {
+        float maxCurrencyValue = currencyValueList.get(0).getSaleRate();
         for (CurrencyValue cur: currencyValueList
         ) {
             if(cur.getSaleRate() > maxCurrencyValue) maxCurrencyValue = cur.getSaleRate();
         }
         logger.info("Max currency value = " + maxCurrencyValue);
         return maxCurrencyValue;
+    }
+
+    public float getMinCurrencyValue(ArrayList<CurrencyValue> currencyValueList) {
+        float minCurrencyValue = currencyValueList.get(0).getSaleRate();
+        for (CurrencyValue cur: currencyValueList
+        ) {
+            if(cur.getSaleRate() < minCurrencyValue) minCurrencyValue = cur.getSaleRate();
+        }
+        logger.info("Min currency value = " + minCurrencyValue);
+        return minCurrencyValue;
     }
 }
