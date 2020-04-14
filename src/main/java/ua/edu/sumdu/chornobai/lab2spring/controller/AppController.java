@@ -23,15 +23,18 @@ public class AppController {
     private BankGovUaService bankGovUaService;
     private MonobankService monobankService;
     private MinMaxExchangeRateService minMaxExchangeRateService;
+    private DateParsingService dateParsingService;
 
     final static Logger logger = Logger.getLogger(AppController.class);
 
     public AppController(PrivatbankService privatbankService, BankGovUaService bankGovUaService,
-                         MonobankService monobankService, MinMaxExchangeRateService minMaxExchangeRateService) {
+                         MonobankService monobankService, MinMaxExchangeRateService minMaxExchangeRateService,
+                         DateParsingService dateParsingService) {
         this.privatbankService = privatbankService;
         this.bankGovUaService = bankGovUaService;
         this.monobankService = monobankService;
         this.minMaxExchangeRateService = minMaxExchangeRateService;
+        this.dateParsingService = dateParsingService;
     }
 
     @RequestMapping(path = "/exchangeRate/{currency}/{date}", method = RequestMethod.GET)
@@ -99,41 +102,21 @@ public class AppController {
         result.setPeriod(period);
         if(value.equals("max") || value.equals("min")){
             result.setMessage(value + " exchange rate");
-            switch (period){
-                case "year":
-                    try {
-                        currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,
-                                LocalDate.now().plusYears(-1), currency).get();
-                        if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
-                        else result.setMessage("Currency info not found!");
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.log(Level.FATAL, "Exception: ", e);
-                    }
-                    break;
-                case "month":
-                    try {
-                        currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,
-                                LocalDate.now().plusMonths(-1), currency).get();
-                        if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
-                        else result.setMessage("Currency info not found!");
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.log(Level.FATAL, "Exception: ", e);
-                    }
-                    break;
-                case "week":
-                    try {
-                        currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,
-                                LocalDate.now().plusDays(-7), currency).get();
-                        if(currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
-                        else result.setMessage("Currency info not found!");
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.log(Level.FATAL, "Exception: ", e);
-                    }
-                    break;
-                default:
-                    logger.info("Incorrect period");
-                    result.setMessage("Incorrect period. Please, enter 'week', 'month' or 'year'");
-                    break;
+
+            if(period.equals("year") || period.equals("month") || period.equals("week")) {
+                try {
+                    LocalDate date = period.equals("year") ? LocalDate.now().plusYears(-1) :
+                            (period.equals("month") ? LocalDate.now().plusMonths(-1) : LocalDate.now().plusDays(-7));
+                    currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,  date, currency).get();
+                    if (currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
+                    else result.setMessage("Currency info not found!");
+                } catch (InterruptedException | ExecutionException e) {
+                    logger.log(Level.FATAL, "Exception: ", e);
+                }
+            }
+            else {
+                logger.info("Incorrect period");
+                result.setMessage("Incorrect period. Please, enter 'week', 'month' or 'year'");
             }
         }
         else result.setMessage("Сan't get the " + value + " value of the exchange rate. Only 'min' or 'max'");
@@ -144,10 +127,7 @@ public class AppController {
     @RequestMapping(path = "/currentExchangeRate/{bank}/{currency}", method = RequestMethod.GET)
     public ExchangeRate getCurrentExchangeRate(@PathVariable(name = "bank") String bank,
                                         @PathVariable(name = "currency") String currency) {
-        LocalDate currentDate = LocalDate.now();
-        String stringDate = (currentDate.getDayOfMonth() <10? "0" + currentDate.getDayOfMonth() : currentDate.getDayOfMonth() )
-                + "." + (currentDate.getMonthValue() < 10 ? "0" + currentDate.getMonthValue(): currentDate.getMonthValue())
-                + "." + currentDate.getYear();
+        String stringDate = dateParsingService.getStringDate(LocalDate.now());
         ExchangeRate result =  getExchangeRate(currency, stringDate);
         ArrayList<CurrencyValue> resultList = result.getListOfValue();
         ArrayList<CurrencyValue> newResultList = new ArrayList<>();
