@@ -17,28 +17,30 @@ import java.util.stream.Stream;
 public class MinMaxExchangeRateService {
     private HTTPRequestService httpRequestService;
     private JacksonParsingService jacksonParsingService;
+    private DateParsingService dateParsingService;
 
     @Autowired
-    public MinMaxExchangeRateService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService) {
+    public MinMaxExchangeRateService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService,
+                                     DateParsingService dateParsingService) {
         this.httpRequestService = httpRequestService;
         this.jacksonParsingService = jacksonParsingService;
+        this.dateParsingService = dateParsingService;
     }
+
 
     final static Logger logger = Logger.getLogger(MinMaxExchangeRateService.class);
 
     @Async
-    public CompletableFuture<ArrayList<CurrencyValue>> getMinMaxExchangeRateForPeriod(String value, LocalDate startDay, String currency) {
+    public CompletableFuture<ArrayList<CurrencyValue>> getMinMaxExchangeRateForPeriod(String value, LocalDate startDay,
+                                                                                      String currency) {
 
         ArrayList<CurrencyValue> currencyValueList = new ArrayList<>();
         float minmaxCurrencyValue;
 
         for (LocalDate date = startDay; date.isBefore(LocalDate.now()); date = date.plusDays(1)) {
-            String stringDate = (date.getDayOfMonth() <10? "0" + date.getDayOfMonth() : date.getDayOfMonth() ) + "."
-                    + (date.getMonthValue() < 10 ? "0"+date.getMonthValue(): date.getMonthValue())+ "." + date.getYear();
-            String day = stringDate.substring(0, 2);
-            String month = stringDate.substring(3, 5);
-            String year = stringDate.substring(6, 10);
-            String formattedDate = year + month + day;
+            String stringDate = dateParsingService.getStringDate(date);
+
+            String formattedDate = dateParsingService.getFormattedDate(stringDate);
             String urlGovUa = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date="
                     + formattedDate + "&amp;json";
             String resultGovUa = httpRequestService.getJSONResult(urlGovUa);
