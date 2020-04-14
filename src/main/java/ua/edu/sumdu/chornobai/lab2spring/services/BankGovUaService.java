@@ -14,23 +14,21 @@ import java.util.concurrent.CompletableFuture;
 public class BankGovUaService {
     private HTTPRequestService httpRequestService;
     private JacksonParsingService jacksonParsingService;
-    private DateParsingService dateParsingService;
 
     @Autowired
-    public BankGovUaService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService,
-                            DateParsingService dateParsingService) {
+    public BankGovUaService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService) {
         this.httpRequestService = httpRequestService;
         this.jacksonParsingService = jacksonParsingService;
-        this.dateParsingService = dateParsingService;
     }
-
 
     final static Logger logger = Logger.getLogger(BankGovUaService.class);
 
     @Async
     public CompletableFuture<CurrencyValue> getResult(String date, String currency) {
-
-        String formattedDate = dateParsingService.getFormattedDate(date);
+        String day = date.substring(0, 2);
+        String month = date.substring(3, 5);
+        String year = date.substring(6, 10);
+        String formattedDate = year + month + day;
 
         CurrencyValue newCurrencyValue = new CurrencyValue();
 
