@@ -1,190 +1,314 @@
 {
-"info":[
-{ 
-"digitalCode":36,"title":"Австралійський долар","literalCode":"AUD"
- }
-,{ 
-"digitalCode":124,"title":"Канадський долар","literalCode":"CAD"
- }
-,{ 
-"digitalCode":156,"title":"Юань Женьмiньбi","literalCode":"CNY"
- }
-,{ 
-"digitalCode":191,"title":"Куна","literalCode":"HRK"
- }
-,{ 
-"digitalCode":203,"title":"Чеська крона","literalCode":"CZK"
- }
-,{ 
-"digitalCode":208,"title":"Данська крона","literalCode":"DKK"
- }
-,{ 
-"digitalCode":344,"title":"Гонконгівський долар","literalCode":"HKD"
- }
-,{ 
-"digitalCode":348,"title":"Форинт","literalCode":"HUF"
- }
-,{ 
-"digitalCode":356,"title":"Індійська рупія","literalCode":"INR"
- }
-,{ 
-"digitalCode":360,"title":"Рупія","literalCode":"IDR"
- }
-,{ 
-"digitalCode":376,"title":"Новий ізраїльський шекель","literalCode":"ILS"
- }
-,{ 
-"digitalCode":392,"title":"Єна","literalCode":"JPY"
- }
-,{ 
-"digitalCode":398,"title":"Теньге","literalCode":"KZT"
- }
-,{ 
-"digitalCode":410,"title":"Вона","literalCode":"KRW"
- }
-,{ 
-"digitalCode":484,"title":"Мексиканське песо","literalCode":"MXN"
- }
-,{ 
-"digitalCode":498,"title":"Молдовський лей","literalCode":"MDL"
- }
-,{ 
-"digitalCode":554,"title":"Новозеландський долар","literalCode":"NZD"
- }
-,{ 
-"digitalCode":578,"title":"Норвезька крона","literalCode":"NOK"
- }
-,{ 
-"digitalCode":643,"title":"Російський рубль","literalCode":"RUB"
- }
-,{ 
-"digitalCode":682,"title":"Саудівський рiял","literalCode":"SAR"
- }
-,{ 
-"digitalCode":702,"title":"Сінгапурський долар","literalCode":"SGD"
- }
-,{ 
-"digitalCode":710,"title":"Ренд","literalCode":"ZAR"
- }
-,{ 
-"digitalCode":752,"title":"Шведська крона","literalCode":"SEK"
- }
-,{ 
-"digitalCode":756,"title":"Швейцарський франк","literalCode":"CHF"
- }
-,{ 
-"digitalCode":818,"title":"Єгипетський фунт","literalCode":"EGP"
- }
-,{ 
-"digitalCode":826,"title":"Фунт стерлінгів","literalCode":"GBP"
- }
-,{ 
-"digitalCode":840,"title":"Долар США","literalCode":"USD"
- }
-,{ 
-"digitalCode":933,"title":"Бiлоруський рубль","literalCode":"BYN"
- }
-,{ 
-"digitalCode":944,"title":"Азербайджанський манат","literalCode":"AZN"
- }
-,{ 
-"digitalCode":946,"title":"Румунський лей","literalCode":"RON"
- }
-,{ 
-"digitalCode":949,"title":"Турецька ліра","literalCode":"TRY"
- }
-,{ 
-"digitalCode":960,"title":"СПЗ (спеціальні права запозичення)","literalCode":"XDR"
- }
-,{ 
-"digitalCode":975,"title":"Болгарський лев","literalCode":"BGN"
- }
-,{ 
-"digitalCode":978,"title":"Євро","literalCode":"EUR"
- }
-,{ 
-"digitalCode":985,"title":"Злотий","literalCode":"PLN"
- }
-,{ 
-"digitalCode":12,"title":"Алжирський динар","literalCode":"DZD"
- }
-,{ 
-"digitalCode":50,"title":"Така","literalCode":"BDT"
- }
-,{ 
-"digitalCode":51,"title":"Вірменський драм","literalCode":"AMD"
- }
-,{ 
-"digitalCode":364,"title":"Іранський ріал","literalCode":"IRR"
- }
-,{ 
-"digitalCode":368,"title":"Іракський динар","literalCode":"IQD"
- }
-,{ 
-"digitalCode":417,"title":"Сом","literalCode":"KGS"
- }
-,{ 
-"digitalCode":422,"title":"Ліванський фунт","literalCode":"LBP"
- }
-,{ 
-"digitalCode":434,"title":"Лівійський динар","literalCode":"LYD"
- }
-,{ 
-"digitalCode":458,"title":"Малайзійський ринггіт","literalCode":"MYR"
- }
-,{ 
-"digitalCode":504,"title":"Марокканський дирхам","literalCode":"MAD"
- }
-,{ 
-"digitalCode":608,"title":"Філіппінське песо","literalCode":"PHP"
- }
-,{ 
-"digitalCode":704,"title":"Донг","literalCode":"VND"
- }
-,{ 
-"digitalCode":764,"title":"Бат","literalCode":"THB"
- }
-,{ 
-"digitalCode":784,"title":"Дирхам ОАЕ","literalCode":"AED"
- }
-,{ 
-"digitalCode":788,"title":"Туніський динар","literalCode":"TND"
- }
-,{ 
-"digitalCode":860,"title":"Узбецький сум","literalCode":"UZS"
- }
-,{ 
-"digitalCode":901,"title":"Новий тайванський долар","literalCode":"TWD"
- }
-,{ 
-"digitalCode":934,"title":"Туркменський новий манат","literalCode":"TMT"
- }
-,{ 
-"digitalCode":936,"title":"Ганське седі","literalCode":"GHS"
- }
-,{ 
-"digitalCode":941,"title":"Сербський динар","literalCode":"RSD"
- }
-,{ 
-"digitalCode":972,"title":"Сомоні","literalCode":"TJS"
- }
-,{ 
-"digitalCode":981,"title":"Ларі","literalCode":"GEL"
- }
-,{ 
-"digitalCode":986,"title":"Бразильський реал","literalCode":"BRL"
- }
-,{ 
-"digitalCode":959,"title":"Золото","literalCode":"XAU"
- }
-,{ 
-"digitalCode":961,"title":"Срiбло","literalCode":"XAG"
- }
-,{ 
-"digitalCode":962,"title":"Платина","literalCode":"XPT"
- }
-,{ 
-"digitalCode":964,"title":"Паладiй","literalCode":"XPD"
- }
-]
+  "info": [
+    {
+      "digitalCode": 36,
+      "title": "Австралійський долар",
+      "literalCode": "AUD"
+    },
+    {
+      "digitalCode": 124,
+      "title": "Канадський долар",
+      "literalCode": "CAD"
+    },
+    {
+      "digitalCode": 156,
+      "title": "Юань Женьмiньбi",
+      "literalCode": "CNY"
+    },
+    {
+      "digitalCode": 191,
+      "title": "Куна",
+      "literalCode": "HRK"
+    },
+    {
+      "digitalCode": 203,
+      "title": "Чеська крона",
+      "literalCode": "CZK"
+    },
+    {
+      "digitalCode": 208,
+      "title": "Данська крона",
+      "literalCode": "DKK"
+    },
+    {
+      "digitalCode": 344,
+      "title": "Гонконгівський долар",
+      "literalCode": "HKD"
+    },
+    {
+      "digitalCode": 348,
+      "title": "Форинт",
+      "literalCode": "HUF"
+    },
+    {
+      "digitalCode": 356,
+      "title": "Індійська рупія",
+      "literalCode": "INR"
+    },
+    {
+      "digitalCode": 360,
+      "title": "Рупія",
+      "literalCode": "IDR"
+    },
+    {
+      "digitalCode": 376,
+      "title": "Новий ізраїльський шекель",
+      "literalCode": "ILS"
+    },
+    {
+      "digitalCode": 392,
+      "title": "Єна",
+      "literalCode": "JPY"
+    },
+    {
+      "digitalCode": 398,
+      "title": "Теньге",
+      "literalCode": "KZT"
+    },
+    {
+      "digitalCode": 410,
+      "title": "Вона",
+      "literalCode": "KRW"
+    },
+    {
+      "digitalCode": 484,
+      "title": "Мексиканське песо",
+      "literalCode": "MXN"
+    },
+    {
+      "digitalCode": 498,
+      "title": "Молдовський лей",
+      "literalCode": "MDL"
+    },
+    {
+      "digitalCode": 554,
+      "title": "Новозеландський долар",
+      "literalCode": "NZD"
+    },
+    {
+      "digitalCode": 578,
+      "title": "Норвезька крона",
+      "literalCode": "NOK"
+    },
+    {
+      "digitalCode": 643,
+      "title": "Російський рубль",
+      "literalCode": "RUB"
+    },
+    {
+      "digitalCode": 682,
+      "title": "Саудівський рiял",
+      "literalCode": "SAR"
+    },
+    {
+      "digitalCode": 702,
+      "title": "Сінгапурський долар",
+      "literalCode": "SGD"
+    },
+    {
+      "digitalCode": 710,
+      "title": "Ренд",
+      "literalCode": "ZAR"
+    },
+    {
+      "digitalCode": 752,
+      "title": "Шведська крона",
+      "literalCode": "SEK"
+    },
+    {
+      "digitalCode": 756,
+      "title": "Швейцарський франк",
+      "literalCode": "CHF"
+    },
+    {
+      "digitalCode": 818,
+      "title": "Єгипетський фунт",
+      "literalCode": "EGP"
+    },
+    {
+      "digitalCode": 826,
+      "title": "Фунт стерлінгів",
+      "literalCode": "GBP"
+    },
+    {
+      "digitalCode": 840,
+      "title": "Долар США",
+      "literalCode": "USD"
+    },
+    {
+      "digitalCode": 933,
+      "title": "Бiлоруський рубль",
+      "literalCode": "BYN"
+    },
+    {
+      "digitalCode": 944,
+      "title": "Азербайджанський манат",
+      "literalCode": "AZN"
+    },
+    {
+      "digitalCode": 946,
+      "title": "Румунський лей",
+      "literalCode": "RON"
+    },
+    {
+      "digitalCode": 949,
+      "title": "Турецька ліра",
+      "literalCode": "TRY"
+    },
+    {
+      "digitalCode": 960,
+      "title": "СПЗ (спеціальні права запозичення)",
+      "literalCode": "XDR"
+    },
+    {
+      "digitalCode": 975,
+      "title": "Болгарський лев",
+      "literalCode": "BGN"
+    },
+    {
+      "digitalCode": 978,
+      "title": "Євро",
+      "literalCode": "EUR"
+    },
+    {
+      "digitalCode": 985,
+      "title": "Злотий",
+      "literalCode": "PLN"
+    },
+    {
+      "digitalCode": 12,
+      "title": "Алжирський динар",
+      "literalCode": "DZD"
+    },
+    {
+      "digitalCode": 50,
+      "title": "Така",
+      "literalCode": "BDT"
+    },
+    {
+      "digitalCode": 51,
+      "title": "Вірменський драм",
+      "literalCode": "AMD"
+    },
+    {
+      "digitalCode": 364,
+      "title": "Іранський ріал",
+      "literalCode": "IRR"
+    },
+    {
+      "digitalCode": 368,
+      "title": "Іракський динар",
+      "literalCode": "IQD"
+    },
+    {
+      "digitalCode": 417,
+      "title": "Сом",
+      "literalCode": "KGS"
+    },
+    {
+      "digitalCode": 422,
+      "title": "Ліванський фунт",
+      "literalCode": "LBP"
+    },
+    {
+      "digitalCode": 434,
+      "title": "Лівійський динар",
+      "literalCode": "LYD"
+    },
+    {
+      "digitalCode": 458,
+      "title": "Малайзійський ринггіт",
+      "literalCode": "MYR"
+    },
+    {
+      "digitalCode": 504,
+      "title": "Марокканський дирхам",
+      "literalCode": "MAD"
+    },
+    {
+      "digitalCode": 608,
+      "title": "Філіппінське песо",
+      "literalCode": "PHP"
+    },
+    {
+      "digitalCode": 704,
+      "title": "Донг",
+      "literalCode": "VND"
+    },
+    {
+      "digitalCode": 764,
+      "title": "Бат",
+      "literalCode": "THB"
+    },
+    {
+      "digitalCode": 784,
+      "title": "Дирхам ОАЕ",
+      "literalCode": "AED"
+    },
+    {
+      "digitalCode": 788,
+      "title": "Туніський динар",
+      "literalCode": "TND"
+    },
+    {
+      "digitalCode": 860,
+      "title": "Узбецький сум",
+      "literalCode": "UZS"
+    },
+    {
+      "digitalCode": 901,
+      "title": "Новий тайванський долар",
+      "literalCode": "TWD"
+    },
+    {
+      "digitalCode": 934,
+      "title": "Туркменський новий манат",
+      "literalCode": "TMT"
+    },
+    {
+      "digitalCode": 936,
+      "title": "Ганське седі",
+      "literalCode": "GHS"
+    },
+    {
+      "digitalCode": 941,
+      "title": "Сербський динар",
+      "literalCode": "RSD"
+    },
+    {
+      "digitalCode": 972,
+      "title": "Сомоні",
+      "literalCode": "TJS"
+    },
+    {
+      "digitalCode": 981,
+      "title": "Ларі",
+      "literalCode": "GEL"
+    },
+    {
+      "digitalCode": 986,
+      "title": "Бразильський реал",
+      "literalCode": "BRL"
+    },
+    {
+      "digitalCode": 959,
+      "title": "Золото",
+      "literalCode": "XAU"
+    },
+    {
+      "digitalCode": 961,
+      "title": "Срiбло",
+      "literalCode": "XAG"
+    },
+    {
+      "digitalCode": 962,
+      "title": "Платина",
+      "literalCode": "XPT"
+    },
+    {
+      "digitalCode": 964,
+      "title": "Паладiй",
+      "literalCode": "XPD"
+    }
+  ]
 }

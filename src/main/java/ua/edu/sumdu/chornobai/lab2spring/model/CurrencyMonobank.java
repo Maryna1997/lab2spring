@@ -1,4 +1,5 @@
 package ua.edu.sumdu.chornobai.lab2spring.model;
+
 import lombok.*;
 
 @Getter

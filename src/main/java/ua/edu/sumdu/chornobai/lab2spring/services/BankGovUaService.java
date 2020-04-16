@@ -2,6 +2,7 @@ package ua.edu.sumdu.chornobai.lab2spring.services;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ua.edu.sumdu.chornobai.lab2spring.model.CurrencyGovUa;
@@ -15,13 +16,16 @@ public class BankGovUaService {
     private HTTPRequestService httpRequestService;
     private JacksonParsingService jacksonParsingService;
     private DateParsingService dateParsingService;
+    private String api;
 
     @Autowired
     public BankGovUaService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService,
-                            DateParsingService dateParsingService) {
+                            DateParsingService dateParsingService,
+                            @Value("${api.bankgovua}") String api) {
         this.httpRequestService = httpRequestService;
         this.jacksonParsingService = jacksonParsingService;
         this.dateParsingService = dateParsingService;
+        this.api = api;
     }
 
 
@@ -34,8 +38,7 @@ public class BankGovUaService {
 
         CurrencyValue newCurrencyValue = new CurrencyValue();
 
-        String urlGovUa = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date="
-                + formattedDate + "&amp;json";
+        String urlGovUa = api + formattedDate + "&amp;json";
         String resultGovUa = httpRequestService.getJSONResult(urlGovUa);
 
         if (!(resultGovUa.equals(""))) {
@@ -51,8 +54,7 @@ public class BankGovUaService {
                     logger.info("Response from bank.gov.ua: " + newCurrencyValue);
                 }
             }
-        }
-        else {
+        } else {
             newCurrencyValue.setBank("bank.gov.ua");
             newCurrencyValue.setMessage("bank.gov.ua didn't responded");
             logger.info("No response from bank.gov.ua");

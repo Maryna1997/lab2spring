@@ -2,6 +2,7 @@ package ua.edu.sumdu.chornobai.lab2spring.services;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ua.edu.sumdu.chornobai.lab2spring.model.CurrencyPrivatbank;
@@ -12,20 +13,23 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class PrivatbankService {
-     private HTTPRequestService httpRequestService;
-     private OrgJSONParsingService orgJSONParsingService;
+    private HTTPRequestService httpRequestService;
+    private OrgJSONParsingService orgJSONParsingService;
+    private String api;
 
     @Autowired
-    public PrivatbankService(HTTPRequestService httpRequestService, OrgJSONParsingService orgJSONParsingService) {
+    public PrivatbankService(HTTPRequestService httpRequestService, OrgJSONParsingService orgJSONParsingService,
+                             @Value("${api.privatbank}") String api) {
         this.httpRequestService = httpRequestService;
         this.orgJSONParsingService = orgJSONParsingService;
+        this.api = api;
     }
 
     final static Logger logger = Logger.getLogger(PrivatbankService.class);
 
     @Async
     public CompletableFuture<CurrencyValue> getResult(String date, String currency) {
-        String urlPrivatbank = "https://api.privatbank.ua/p24api/exchange_rates?json&date=" + date;
+        String urlPrivatbank = api + "json&date=" + date;
         String resultPrivatbank = httpRequestService.getJSONResult(urlPrivatbank);
         CurrencyValue newCurrencyValue = new CurrencyValue();
         if (!(resultPrivatbank.equals(""))) {
@@ -40,8 +44,7 @@ public class PrivatbankService {
                     logger.info("Response from Privatbank:" + newCurrencyValue);
                 }
             }
-        }
-        else {
+        } else {
             logger.info("No response from Privatbank");
             newCurrencyValue.setBank("Privatbank");
             newCurrencyValue.setMessage("Privatbank didn't responded");

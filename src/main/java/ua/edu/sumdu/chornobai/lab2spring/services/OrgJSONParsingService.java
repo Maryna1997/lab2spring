@@ -14,12 +14,12 @@ import java.util.ArrayList;
 public class OrgJSONParsingService {
     final static Logger logger = Logger.getLogger(OrgJSONParsingService.class);
 
-    public void parseJSON (String resultJSON, String date, ArrayList<CurrencyPrivatbank> listCurrencyPrivatbank) {
-       if (resultJSON == null) {
-           return;
-       }
+    public void parseJSON(String resultJSON, String date, ArrayList<CurrencyPrivatbank> listCurrencyPrivatbank) {
+        if (resultJSON == null) {
+            return;
+        }
         JSONArray jsonArray = new JSONObject(resultJSON).getJSONArray("exchangeRate");
-        for (Object currency: jsonArray
+        for (Object currency : jsonArray
         ) {
             JSONObject jsonCurrency = (JSONObject) currency;
             try {

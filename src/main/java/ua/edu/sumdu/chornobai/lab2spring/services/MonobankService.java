@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ua.edu.sumdu.chornobai.lab2spring.model.CurrencyMonobank;
@@ -18,15 +19,19 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class MonobankService {
     private RestTemplatesParsingService restTemplatesParsingService;
+    private String filePath;
 
     @Autowired
-    public MonobankService(RestTemplatesParsingService restTemplatesParsingService) {
+    public MonobankService(RestTemplatesParsingService restTemplatesParsingService,
+                           @Value("${fileISO4217.path}") String filePath) {
         this.restTemplatesParsingService = restTemplatesParsingService;
+        this.filePath = filePath;
     }
+
     final static Logger logger = Logger.getLogger(MonobankService.class);
 
     @Async
-    public CompletableFuture<CurrencyValue> getResult(String currency, String date){
+    public CompletableFuture<CurrencyValue> getResult(String currency, String date) {
         CurrencyMonobank[] currencyMonobank = restTemplatesParsingService.parseJSON();
         CurrencyValue newCurrencyValue = new CurrencyValue();
         for (CurrencyMonobank cur : currencyMonobank
@@ -45,15 +50,15 @@ public class MonobankService {
     public long getCurrencyDigitalCode(String currency) {
         long currencyCode = 0;
         JSONParser parser = new JSONParser();
-        try (FileReader reader = new FileReader(".\\src\\main\\files\\iso4217.json")) {
+        try (FileReader reader = new FileReader(filePath)) {
             Object obj = parser.parse(reader);
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray jsonArray = (JSONArray) jsonObject.get("info");
-            for (Object jsonObj: jsonArray
-                 ) {
+            for (Object jsonObj : jsonArray
+            ) {
                 JSONObject jsonInfo = (JSONObject) jsonObj;
-                if(currency.equals(jsonInfo.get("literalCode"))){
-                    currencyCode =  (long) jsonInfo.get("digitalCode");
+                if (currency.equals(jsonInfo.get("literalCode"))) {
+                    currencyCode = (long) jsonInfo.get("digitalCode");
                 }
             }
         } catch (ParseException | IOException | NullPointerException e) {

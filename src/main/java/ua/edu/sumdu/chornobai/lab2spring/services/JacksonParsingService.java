@@ -14,10 +14,11 @@ import java.util.List;
 public class JacksonParsingService {
 
     final static Logger logger = Logger.getLogger(JacksonParsingService.class);
-    public List<CurrencyGovUa> parseJSON (String resultGovUa)  {
+
+    public List<CurrencyGovUa> parseJSON(String resultGovUa) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<CurrencyGovUa> result =  Arrays.asList(objectMapper.readValue(resultGovUa, CurrencyGovUa[].class));
+            List<CurrencyGovUa> result = Arrays.asList(objectMapper.readValue(resultGovUa, CurrencyGovUa[].class));
             logger.info("Parsing by JacksonParsingService");
             return result;
         } catch (IOException e) {

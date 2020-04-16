@@ -2,6 +2,7 @@ package ua.edu.sumdu.chornobai.lab2spring.services;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ua.edu.sumdu.chornobai.lab2spring.model.CurrencyGovUa;
@@ -18,13 +19,16 @@ public class MinMaxExchangeRateService {
     private HTTPRequestService httpRequestService;
     private JacksonParsingService jacksonParsingService;
     private DateParsingService dateParsingService;
+    private String api;
 
     @Autowired
     public MinMaxExchangeRateService(HTTPRequestService httpRequestService, JacksonParsingService jacksonParsingService,
-                                     DateParsingService dateParsingService) {
+                                     DateParsingService dateParsingService,
+                                     @Value("${api.bankgovua}") String api) {
         this.httpRequestService = httpRequestService;
         this.jacksonParsingService = jacksonParsingService;
         this.dateParsingService = dateParsingService;
+        this.api = api;
     }
 
 
@@ -41,8 +45,7 @@ public class MinMaxExchangeRateService {
             String stringDate = dateParsingService.getStringDate(date);
 
             String formattedDate = dateParsingService.getFormattedDate(stringDate);
-            String urlGovUa = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date="
-                    + formattedDate + "&amp;json";
+            String urlGovUa = api + formattedDate + "&amp;json";
             String resultGovUa = httpRequestService.getJSONResult(urlGovUa);
 
             if (!(resultGovUa.equals(""))) {
@@ -59,8 +62,7 @@ public class MinMaxExchangeRateService {
                         currencyValueList.add(newCurrencyValue);
                     }
                 }
-            }
-            else  {
+            } else {
                 CurrencyValue newCurrencyValue = new CurrencyValue();
                 newCurrencyValue.setBank("bank.gov.ua");
                 newCurrencyValue.setMessage("bank.gov.ua didn't responded");
@@ -69,11 +71,11 @@ public class MinMaxExchangeRateService {
             }
         }
         if (currencyValueList.size() > 0) {
-            if(value.equals("max")) minmaxCurrencyValue = getMaxCurrencyValue(currencyValueList);
+            if (value.equals("max")) minmaxCurrencyValue = getMaxCurrencyValue(currencyValueList);
             else minmaxCurrencyValue = getMinCurrencyValue(currencyValueList);
 
             Stream<CurrencyValue> stream = new ArrayList<>(currencyValueList.subList(0, currencyValueList.size())).stream();
-            stream.filter(cur -> cur.getSaleRate() != minmaxCurrencyValue).forEach(currencyValueList:: remove);
+            stream.filter(cur -> cur.getSaleRate() != minmaxCurrencyValue).forEach(currencyValueList::remove);
         }
 
         return CompletableFuture.completedFuture(currencyValueList);
@@ -81,9 +83,9 @@ public class MinMaxExchangeRateService {
 
     public float getMaxCurrencyValue(ArrayList<CurrencyValue> currencyValueList) {
         float maxCurrencyValue = currencyValueList.get(0).getSaleRate();
-        for (CurrencyValue cur: currencyValueList
+        for (CurrencyValue cur : currencyValueList
         ) {
-            if(cur.getSaleRate() > maxCurrencyValue) maxCurrencyValue = cur.getSaleRate();
+            if (cur.getSaleRate() > maxCurrencyValue) maxCurrencyValue = cur.getSaleRate();
         }
         logger.info("Max currency value = " + maxCurrencyValue);
         return maxCurrencyValue;
@@ -91,9 +93,9 @@ public class MinMaxExchangeRateService {
 
     public float getMinCurrencyValue(ArrayList<CurrencyValue> currencyValueList) {
         float minCurrencyValue = currencyValueList.get(0).getSaleRate();
-        for (CurrencyValue cur: currencyValueList
+        for (CurrencyValue cur : currencyValueList
         ) {
-            if(cur.getSaleRate() < minCurrencyValue) minCurrencyValue = cur.getSaleRate();
+            if (cur.getSaleRate() < minCurrencyValue) minCurrencyValue = cur.getSaleRate();
         }
         logger.info("Min currency value = " + minCurrencyValue);
         return minCurrencyValue;

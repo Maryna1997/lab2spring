@@ -39,7 +39,7 @@ public class AppController {
 
     @RequestMapping(path = "/exchangeRate/{currency}/{date}", method = RequestMethod.GET)
     public ExchangeRate getExchangeRate(@PathVariable(name = "currency") String currency,
-                                  @PathVariable(name = "date") String date) {
+                                        @PathVariable(name = "date") String date) {
         logger.info("New request for get exchange rate (currency = " + currency + ", date = " + date + ")");
         ExchangeRate result = new ExchangeRate();
         ArrayList<CurrencyValue> currencyValueList = new ArrayList<>();
@@ -60,29 +60,27 @@ public class AppController {
                     CompletableFuture<CurrencyValue> monobankResult = monobankService.getResult(currency, date);
                     combinedResult = Stream.of(privatbankResult, bankGovUaResult, monobankResult)
                             .map(CompletableFuture::join).collect(Collectors.toList());
-                }
-                else {
+                } else {
                     combinedResult = Stream.of(privatbankResult, bankGovUaResult).map(CompletableFuture::join)
                             .collect(Collectors.toList());
                 }
 
-                for (CurrencyValue cur: combinedResult
-                     ) {
+                for (CurrencyValue cur : combinedResult
+                ) {
                     if (cur.getBank() != null) {
-                       currencyValueList.add(cur);
+                        currencyValueList.add(cur);
                     }
                 }
 
-                if (currencyValueList.size() > 0)  result.setListOfValue(currencyValueList);
+                if (currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
                 else result.setMessage("Currency info not found!");
                 logger.info("Response result:" + result);
             } else {
                 result.setMessage("Requested date is greater than today's date. Please enter a valid date");
-                logger.info("Requested date"  + date + "is greater than today's date");
+                logger.info("Requested date" + date + "is greater than today's date");
             }
             return result;
-        }
-        catch (IndexOutOfBoundsException | NumberFormatException | DateTimeException  e) {
+        } catch (IndexOutOfBoundsException | NumberFormatException | DateTimeException e) {
             result.setMessage("Error: invalid date format");
             logger.log(Level.FATAL, "Exception: ", e);
             return result;
@@ -92,53 +90,49 @@ public class AppController {
 
     @RequestMapping(path = "/exchangeRate/{value}/{currency}/{period}", method = RequestMethod.GET)
     public ExchangeRate getMinMaxExchangeRate(@PathVariable(name = "value") String value,
-                                            @PathVariable(name = "currency") String currency,
-                                            @PathVariable(name = "period") String period) {
+                                              @PathVariable(name = "currency") String currency,
+                                              @PathVariable(name = "period") String period) {
         logger.info("New request for get the " + value + " exchange rate (currency = " + currency + ", " +
                 "period = " + period + ")");
         ExchangeRate result = new ExchangeRate();
         ArrayList<CurrencyValue> currencyValueList;
         result.setCurrency(currency);
         result.setPeriod(period);
-        if(value.equals("max") || value.equals("min")){
+        if (value.equals("max") || value.equals("min")) {
             result.setMessage(value + " exchange rate");
-
-            if(period.equals("year") || period.equals("month") || period.equals("week")) {
+            if (period.equals("year") || period.equals("month") || period.equals("week")) {
                 try {
                     LocalDate date = period.equals("year") ? LocalDate.now().plusYears(-1) :
                             (period.equals("month") ? LocalDate.now().plusMonths(-1) : LocalDate.now().plusDays(-7));
-                    currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value,  date, currency).get();
+                    currencyValueList = minMaxExchangeRateService.getMinMaxExchangeRateForPeriod(value, date, currency).get();
                     if (currencyValueList.size() > 0) result.setListOfValue(currencyValueList);
                     else result.setMessage("Currency info not found!");
                 } catch (InterruptedException | ExecutionException e) {
                     logger.log(Level.FATAL, "Exception: ", e);
                 }
-            }
-            else {
+            } else {
                 logger.info("Incorrect period");
                 result.setMessage("Incorrect period. Please, enter 'week', 'month' or 'year'");
             }
-        }
-        else result.setMessage("Сan't get the " + value + " value of the exchange rate. Only 'min' or 'max'");
+        } else result.setMessage("Сan't get the " + value + " value of the exchange rate. Only 'min' or 'max'");
         logger.info("Response result: " + result);
         return result;
     }
 
     @RequestMapping(path = "/currentExchangeRate/{bank}/{currency}", method = RequestMethod.GET)
     public ExchangeRate getCurrentExchangeRate(@PathVariable(name = "bank") String bank,
-                                        @PathVariable(name = "currency") String currency) {
+                                               @PathVariable(name = "currency") String currency) {
         String stringDate = dateParsingService.getStringDate(LocalDate.now());
-        ExchangeRate result =  getExchangeRate(currency, stringDate);
+        ExchangeRate result = getExchangeRate(currency, stringDate);
         ArrayList<CurrencyValue> resultList = result.getListOfValue();
         ArrayList<CurrencyValue> newResultList = new ArrayList<>();
         if (resultList != null) {
-            for (CurrencyValue curValue:  resultList
+            for (CurrencyValue curValue : resultList
             ) {
                 if (bank.equals(curValue.getBank())) newResultList.add(curValue);
             }
             if (newResultList.size() == 0) result.setMessage("Bank info not found!");
-        }
-        else result.setMessage("Currency info not found!");
+        } else result.setMessage("Currency info not found!");
         result.setListOfValue(newResultList);
         return result;
     }
